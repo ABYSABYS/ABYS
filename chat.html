@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Чат</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('i.jpeg');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+            color: #fff;
+        }
+        .chat-container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: rgba(20, 20, 20, 0.8);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        #messages {
+            height: 300px;
+            overflow-y: scroll;
+            border: 1px solid #444;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .message {
+            margin-bottom: 10px;
+        }
+        .message strong {
+            color: #FFD700;
+        }
+        input[type="text"] {
+            width: calc(100% - 100px);
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+        button {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            background-color: #007BFF;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        a {
+            color: #FFD700;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <h1>Чат</h1>
+        <div id="messages"></div>
+        <form id="chat-form">
+            <input type="text" id="message-input" placeholder="Введите ваше сообщение..." required>
+            <button type="submit">Отправить</button>
+        </form>
+        <a href="logout.html">Выйти</a>
+    </div>
+</body>
+<script>
+    const messagesContainer = document.getElementById('messages');
+    const messageInput = document.getElementById('message-input');
+    let nickname = localStorage.getItem('nickname') || prompt("Введите ваш ник:") || "Гость";
+    localStorage.setItem('nickname', nickname);
+
+    function scrollDown() {
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function fetchMessages() {
+        const messages = JSON.parse(localStorage.getItem('messages') || '[]');
+        messagesContainer.innerHTML = '';
+        messages.forEach(msg => {
+            const { message, nickname, timestamp } = msg;
+            const time = new Date(timestamp).toLocaleTimeString();
+            messagesContainer.innerHTML += `<div class='message'><strong>${nickname}:</strong> ${message} (время: ${time})</div>`;
+        });
+        scrollDown();
+    }
+
+    document.getElementById('chat-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const message = messageInput.value.trim();
+        if (message) {
+            const messages = JSON.parse(localStorage.getItem('messages') || '[]');
+            const timestamp = Date.now();
+            messages.push({ message, nickname, timestamp });
+            localStorage.setItem('messages', JSON.stringify(messages));
+            fetchMessages();
+            messageInput.value = '';
+        }
+    });
+
+    setInterval(fetchMessages, 2000);
+    fetchMessages(); // Initial fetch
+</script>
+</html> 

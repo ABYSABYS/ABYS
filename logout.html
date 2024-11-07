@@ -1,0 +1,19 @@
+html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Выход</title>
+</head>
+<body>
+    <script>
+        // Удаляем данные о сессии
+        localStorage.removeItem('loggedin');
+        localStorage.removeItem('nickname');
+
+        // Перенаправляем на главную страницу
+        window.location.href = 'index.html'; // Здесь указываем файл, на который нужно перенаправить
+    </script>
+</body>
+</html>

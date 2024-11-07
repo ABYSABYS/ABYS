@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        input {
+            margin: 5px 0;
+            padding: 10px;
+            width: 80%;
+            box-sizing: border-box;
+            border: none;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px;
+            background-color: #555;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #777;
+        }
+    </style>
+</head>
+<body>
+    <h1>Вход</h1>
+
+    <p id="error" style="color: red;"></p>
+
+    <form id="login-form">
+        <input type="text" id="nickname" placeholder="Никнейм" required>
+        <input type="password" id="password" placeholder="Пароль" required>
+        <button type="submit">Войти</button>
+    </form>
+
+    <h6 style="color: white;">
+        <a href="register.html" style="color: white; text-decoration: none;">Зарегистрироваться</a>
+    </h6>
+</body>
+<script>
+    if (!localStorage.getItem('users')) {
+        localStorage.setItem('users', JSON.stringify([]));
+    }
+
+    document.getElementById('login-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const nickname = document.getElementById('nickname').value.trim();
+        const password = document.getElementById('password').value.trim();
+        const users = JSON.parse(localStorage.getItem('users'));
+        
+        // Хешируем введённый пароль (для демонстрации используем btoa, в реальности используйте библиотеку для хеширования)
+        const hashedPassword = btoa(password);
+        const user = users.find(user => user.nickname === nickname && user.password === hashedPassword);
+
+        if (user) {
+            window.location.href = 'chat.html';
+        } else {
+            document.getElementById('error').innerText = 'Неверный никнейм или пароль.';
+        }
+    });
+</script>
+</html>

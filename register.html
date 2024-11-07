@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        input {
+            margin: 5px 0;
+            padding: 10px;
+            width: 80%;
+            box-sizing: border-box;
+            border: none;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px;
+            background-color: #555;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #777;
+        }
+    </style>
+</head>
+<body>
+    <h1>Регистрация</h1>
+
+    <p id="error" style="color: red;"></p>
+
+    <form id="register-form">
+        <input type="text" id="nickname" placeholder="Никнейм" required>
+        <input type="password" id="password" placeholder="Пароль" required>
+        <button type="submit">Зарегистрироваться</button>
+    </form>
+
+    <h6 style="color: white;">
+        <a href="login.html" style="color: white; text-decoration: none;">Уже есть аккаунт?</a>
+    </h6>
+</body>
+<script>
+    if (!localStorage.getItem('users')) {
+        localStorage.setItem('users', JSON.stringify([]));
+    }
+
+    document.getElementById('register-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const nickname = document.getElementById('nickname').value.trim();
+        const password = document.getElementById('password').value.trim();
+        
+        // Валидация длины пароля
+        if (password.length < 8) {
+            document.getElementById('error').innerText = 'Пароль должен содержать минимум 8 символов.';
+            return;
+        }
+
+        const users = JSON.parse(localStorage.getItem('users'));
+        if (users.some(user => user.nickname === nickname)) {
+            document.getElementById('error').innerText = 'Пользователь с таким никнеймом уже существует.';
+        } else {
+            // Хешируем пароль (для демонстрации используем btoa, в реальности используйте библиотеку для хеширования)
+            const hashedPassword = btoa(password);
+            users.push({ nickname, password: hashedPassword });
+            localStorage.setItem('users', JSON.stringify(users));
+            window.location.href = 'chat.html';
+        }
+    });
+</script>
+</html>
